@@ -45,8 +45,8 @@ app.get("/api/get", (req, res) => {
 
 app.post("/api/insert", (req, res) => {
   const name = req.body.Name;
-  const author = req.body.author;
-  const genre = req.body.genre;
+  const author = req.body.Author;
+  const genre = req.body.Genre;
 
   const sql = "INSERT INTO books (Name, Author, Genre) VALUES(?,?,?)";
   db.query(sql, [name, author, genre], (err, result) => {
@@ -56,9 +56,9 @@ app.post("/api/insert", (req, res) => {
   });
 });
 
-// app.get("/",(req, res)=>{
-//     res.send("Hello world!");
-// })
+app.get("/", (req, res) => {
+  res.send("Hello world!");
+});
 
 app.listen(3001, () => {
   console.log("server running on port 3001");
