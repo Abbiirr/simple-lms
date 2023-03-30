@@ -1,1 +1,1 @@
-# simple-lms
+# simple-e-commerce
