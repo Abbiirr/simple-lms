@@ -1,35 +1,17 @@
 import express from "express";
 
 import dotenv from "dotenv";
-import connectDB from "./config/db.js";
+import { connectDB, db } from "./config/db.js";
 import path from "path";
 
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
 import productRoutes from "./routes/productRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
-import mysql from "mysql2";
-// import db from "./config/db.js";
 
 dotenv.config({ path: path.resolve("../.env") });
 
-// connectDB();
-
-const db = mysql.createConnection({
-  host: "127.0.0.1",
-  user: "root",
-  port: 3306,
-  password: "",
-  database: "lms",
-});
-
-db.connect(function (err) {
-  if (err) {
-    return console.error("error: " + err.message);
-  }
-
-  console.log("Connected to the MySQL server.");
-});
+connectDB();
 
 const app = express();
 app.use(express.json());
@@ -42,19 +24,6 @@ app.get("/api/get", (req, res) => {
     if (err) console.log(err);
   });
 });
-
-// app.post("/api/insert", (req, res) => {
-//   const name = req.body.Name;
-//   const author = req.body.Author;
-//   const genre = req.body.Genre;
-
-//   const sql = "INSERT INTO books (Name, Author, Genre) VALUES(?,?,?)";
-//   db.query(sql, [name, author, genre], (err, result) => {
-//     console.log(result);
-
-//     if (err) console.log(err);
-//   });
-// });
 
 app.post("/api/insert", (req, res) => {
   const name = req.body.name;
