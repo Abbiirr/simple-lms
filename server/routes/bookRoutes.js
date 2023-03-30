@@ -44,4 +44,31 @@ router.post(
   })
 );
 
+router.get("/search", (req, res) => {
+  const { query } = req.query;
+
+  console.log(query);
+
+  // Build the SQL query based on the search query and filter options
+  let sql = `SELECT * FROM lms.books WHERE name LIKE '%${query}%' OR author LIKE '%${query}%' OR genre LIKE '%${query}%' OR short_description LIKE '%${query}%'`;
+
+  if (req.query.author) {
+    sql += ` AND author='${req.query.author}'`;
+  }
+
+  if (req.query.genre) {
+    sql += ` AND genre='${req.query.genre}'`;
+  }
+
+  // Execute the SQL query
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: "Internal server error" });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
 export default router;
