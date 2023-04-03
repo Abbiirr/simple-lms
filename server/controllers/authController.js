@@ -122,7 +122,10 @@ const Reset = async (req, res, next) => {
 // Logout Account
 const Logout = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const token = req.headers.authorization.split(" ")[1];
+    const decode = jwt.verify(token, "SECRET");
+
+    const userId = decode.id;
 
     await db
       .promise()
