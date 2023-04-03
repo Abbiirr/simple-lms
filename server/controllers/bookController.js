@@ -1,4 +1,5 @@
 import { db } from "../config/db.js";
+import jwt from "jsonwebtoken";
 
 //get all books
 const getBooks = async (req, res) => {
@@ -71,7 +72,10 @@ const searchBooks = async (req, res) => {
 const borrowBook = async (req, res, next) => {
   try {
     const { book_id } = req.body;
-    const user_id = req.user.id;
+    const token = req.headers.authorization.split(" ")[1];
+    const decode = jwt.verify(token, "SECRET");
+
+    const user_id = decode.id;
 
     // Check if book exists and is available
     const [bookRows] = await db
