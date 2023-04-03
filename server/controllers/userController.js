@@ -65,8 +65,10 @@ const deleteUser = async (req, res, next) => {
 
 const editUser = async (req, res, next) => {
   try {
+    const token = req.headers.authorization.split(" ")[1];
+    const decode = jwt.verify(token, "SECRET");
     const { id } = req.params;
-    const { name, email } = req.body;
+    const { email } = req.body;
 
     const [rows, fields] = await db
       .promise()
@@ -81,7 +83,7 @@ const editUser = async (req, res, next) => {
 
     const user = rows[0];
 
-    if (req.user.role !== "Librarian") {
+    if (decode.role !== "Librarian") {
       return res.status(403).json({
         status: false,
         message: "Access denied",
@@ -90,11 +92,7 @@ const editUser = async (req, res, next) => {
 
     await db
       .promise()
-      .query(`UPDATE users SET name = ?, email = ? WHERE id = ?`, [
-        name,
-        email,
-        id,
-      ]);
+      .query(`UPDATE users SET email = ? WHERE id = ?`, [email, id]);
 
     res.status(200).json({
       status: true,

@@ -4,5 +4,6 @@ const router = express.Router();
 
 router.get("/", userController.getUsers);
 router.delete("/:id", userController.deleteUser);
+router.put("/:id", userController.editUser);
 
 export default router;
