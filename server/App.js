@@ -6,8 +6,6 @@ import path from "path";
 
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
-import productRoutes from "./routes/productRoutes.js";
-import orderRoutes from "./routes/orderRoutes.js";
 import bookRoutes from "./routes/bookRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
@@ -30,8 +28,6 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
-app.use("/api/products", productRoutes);
-app.use("/api/orders", orderRoutes);
 app.use(notFound);
 
 app.use(errorHandler);
