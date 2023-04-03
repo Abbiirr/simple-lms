@@ -26,7 +26,7 @@ const deleteUser = async (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
     const decode = jwt.verify(token, "SECRET");
 
-    const id = decode.id;
+    const { id } = req.params;
 
     const [rows, fields] = await db
       .promise()
@@ -63,4 +63,50 @@ const deleteUser = async (req, res, next) => {
   }
 };
 
-export default { getUsers, deleteUser };
+const editUser = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { name, email } = req.body;
+
+    const [rows, fields] = await db
+      .promise()
+      .query(`SELECT * FROM users WHERE id = ?`, [id]);
+
+    if (rows.length === 0) {
+      return res.status(404).json({
+        status: false,
+        message: "User not found",
+      });
+    }
+
+    const user = rows[0];
+
+    if (req.user.role !== "Librarian") {
+      return res.status(403).json({
+        status: false,
+        message: "Access denied",
+      });
+    }
+
+    await db
+      .promise()
+      .query(`UPDATE users SET name = ?, email = ? WHERE id = ?`, [
+        name,
+        email,
+        id,
+      ]);
+
+    res.status(200).json({
+      status: true,
+      message: "User updated successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: false,
+      message: "Server error",
+    });
+  }
+};
+
+export default { getUsers, deleteUser, editUser };
