@@ -119,83 +119,28 @@ const Reset = async (req, res, next) => {
   }
 };
 
-// Logout
+// Logout Account
 const Logout = async (req, res, next) => {
   try {
-    // Split token
-    const token = req.headers.authorization.split(" ")[1];
-    const decode = jwt.verify(token, "SECRET");
+    const userId = req.user.id;
 
-    // Doctor Logout
-    if (decode.role === "doctor") {
-      isDoctor = true;
-      // Find account using account id and role
-      let account = await Doctor.findOne({
-        $and: [{ _id: decode.id }, { role: decode.role }],
-      });
-      if (!account) {
-        return res.status(404).json({
-          status: false,
-          message: "Invalid token",
-        });
-      }
+    await db
+      .promise()
+      .query(`UPDATE users SET access_token = NULL, status = ? WHERE id = ?`, [
+        "offline",
+        userId,
+      ]);
 
-      // Find account and null token field
-      const updateToken = await Doctor.findByIdAndUpdate(
-        { _id: decode.id },
-        { $set: { access_token: null, status: "offline" } }
-      );
-      if (!updateToken) {
-        return res.status(404).json({
-          status: false,
-          message: "Invalid token",
-        });
-      }
-
-      res.status(200).json({
-        status: true,
-        message: "Successfully logged out",
-      });
-    }
-
-    // Patient Logout
-    if (decode.role === "patient") {
-      isDoctor = false;
-      // Find account using account id and role
-      let account = await Patient.findOne({
-        $and: [{ _id: decode.id }, { role: decode.role }],
-      });
-      if (!account) {
-        return res.status(404).json({
-          status: false,
-          message: "Invalid token",
-        });
-      }
-
-      // Find account and null token field
-      const updateToken = await Patient.findByIdAndUpdate(
-        { _id: decode.id },
-        { $set: { access_token: null, status: "offline" } }
-      );
-      if (!updateToken) {
-        return res.status(404).json({
-          status: false,
-          message: "Invalid token",
-        });
-      }
-
-      res.status(200).json({
-        status: true,
-        message: "Successfully logged out",
-      });
-    }
+    res.status(200).json({
+      status: true,
+      message: "Successfully logged out",
+    });
   } catch (error) {
-    if (error) {
-      res.status(501).json({
-        status: false,
-        message: error.message,
-      });
-    }
+    console.error(error);
+    res.status(500).json({
+      status: false,
+      message: "Server error",
+    });
   }
 };
 
