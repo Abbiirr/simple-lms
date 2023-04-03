@@ -57,201 +57,54 @@ const Register = async (req, res, next) => {
 // Login Account
 const Login = async (req, res, next) => {
   try {
-    const { email, password, role } = req.body;
+    const { username, password } = req.body;
 
-    // Doctor Check
-    if (role === "doctor") {
-      // Account find using email
-      isDoctor = true;
+    const [rows, fields] = await db
+      .promise()
+      .query(`SELECT * FROM users WHERE username = ?`, [username]);
 
-      let account = await Doctor.findOne({ email }).exec();
-
-      // Compare with password
-      if (account) {
-        const result = await bcrypt.compare(password, account.password);
-        if (result) {
-          // Generate JWT token
-          const token = await jwt.sign(
-            { id: account._id, name: account.name, role: account.role },
-            "SECRET",
-            { expiresIn: "365d" }
-          );
-
-          // Update JWT token
-          const updateToken = await Doctor.findOneAndUpdate(
-            { _id: account._id },
-            { $set: { access_token: token, status: "online" } },
-            { new: true }
-          ).exec();
-
-          //---email verification start---
-
-          // if (!account.verified) {
-          //   let token = await Token.findOne({ userId: account._id });
-          //   if (!token) {
-          //     token = await new Token({
-          //       userId: account._id,
-          //       token: crypto.randomBytes(32).toString("hex"),
-          //     }).save();
-          //     const url = `http://localhost:4000/users/${account.id}/verify/${token.token}`;
-          //     await sendEmail(account.email, "Verify Email", url);
-          //   }
-
-          //   return res
-          //     .status(400)
-          //     .send({ message: "An Email sent to your account please verify" });
-          // }
-
-          //---email verification end
-
-          if (updateToken) {
-            return res.status(200).json({
-              status: true,
-              token,
-            });
-          }
-
-          //const emailtoken = account.generateAuthToken();
-          res
-            .status(200)
-            .send({ data: token, message: "logged in successfully" });
-        }
-
-        return res.status(404).json({
-          status: false,
-          message: "Invalid e-mail or password",
-        });
-      }
+    if (rows.length === 0) {
+      return res.status(404).json({
+        status: false,
+        message: "Invalid username or password",
+      });
     }
 
-    // Patient Check
-    if (role === "patient") {
-      isDoctor = false;
-      // Account find using email
-      let account = await Patient.findOne({ email }).exec();
+    const account = rows[0];
 
-      // Compare with password
-      if (account) {
-        const result = await bcrypt.compare(password, account.password);
-        if (result) {
-          // Generate JWT token
-          const token = await jwt.sign(
-            { id: account._id, name: account.name, role: account.role },
-            "SECRET",
-            { expiresIn: "365d" }
-          );
+    const result = await bcrypt.compare(password, account.password);
 
-          // Update JWT token
-          const updateToken = await Patient.findOneAndUpdate(
-            { _id: account._id },
-            { $set: { access_token: token, status: "online" } },
-            { new: true }
-          ).exec();
-
-          //---email verification start---
-
-          // if (!account.verified) {
-          //   let token = await Token.findOne({ userId: account._id });
-          //   if (!token) {
-          //     token = await new Token({
-          //       userId: account._id,
-          //       token: crypto.randomBytes(32).toString("hex"),
-          //     }).save();
-          //     const url = `http://localhost:3000/users/${account._id}/verify/${token.token}`;
-          //     await sendEmail(account.email, "Verify Email", url);
-          //   }
-
-          //   return res
-          //     .status(400)
-          //     .send({ message: "An Email sent to your account please verify" });
-          // }
-
-          //---email verification end
-
-          if (updateToken) {
-            return res.status(200).json({
-              status: true,
-              token,
-            });
-          }
-
-          //const emailtoken = account.generateAuthToken();
-          res
-            .status(200)
-            .send({ data: token, message: "logged in successfully" });
-        }
-        res.status(404).json({
-          status: false,
-          message: "Invalid e-mail or password",
-        });
-      }
+    if (!result) {
+      return res.status(404).json({
+        status: false,
+        message: "Invalid username or password",
+      });
     }
 
-    if (role === "admin") {
-      // Account find using email
-      isDoctor = true;
+    const token = jwt.sign(
+      { id: account.id, username: username, role: account.role },
+      "SECRET",
+      { expiresIn: "365d" }
+    );
 
-      let account = await Admin.findOne({ email }).exec();
+    await db
+      .promise()
+      .query(`UPDATE users SET access_token = ?, status = ? WHERE id = ?`, [
+        token,
+        "online",
+        account.id,
+      ]);
 
-      // Compare with password
-      if (account) {
-        const result = await bcrypt.compare(password, account.password);
-        if (result) {
-          // Generate JWT token
-          const token = await jwt.sign(
-            { id: account._id, name: account.name, role: account.role },
-            "SECRET",
-            { expiresIn: "365d" }
-          );
-
-          // Update JWT token
-          const updateToken = await Admin.findOneAndUpdate(
-            { _id: account._id },
-            { $set: { access_token: token, status: "online" } },
-            { new: true }
-          ).exec();
-
-          //---email verification start---
-
-          // if (!account.verified) {
-          //   let token = await Token.findOne({ userId: account._id });
-          //   if (!token) {
-          //     token = await new Token({
-          //       userId: account._id,
-          //       token: crypto.randomBytes(32).toString("hex"),
-          //     }).save();
-          //     const url = `http://localhost:4000/users/${account.id}/verify/${token.token}`;
-          //     await sendEmail(account.email, "Verify Email", url);
-          //   }
-
-          //   return res
-          //     .status(400)
-          //     .send({ message: "An Email sent to your account please verify" });
-          // }
-
-          //---email verification end
-
-          if (updateToken) {
-            return res.status(200).json({
-              status: true,
-              token,
-            });
-          }
-
-          //const emailtoken = account.generateAuthToken();
-          res
-            .status(200)
-            .send({ data: token, message: "logged in successfully" });
-        }
-
-        return res.status(404).json({
-          status: false,
-          message: "Invalid e-mail or password",
-        });
-      }
-    }
+    res.status(200).json({
+      status: true,
+      token,
+    });
   } catch (error) {
-    if (error) next(error);
+    console.error(error);
+    res.status(500).json({
+      status: false,
+      message: "Server error",
+    });
   }
 };
 

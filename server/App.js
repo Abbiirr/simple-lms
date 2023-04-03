@@ -10,6 +10,7 @@ import productRoutes from "./routes/productRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import bookRoutes from "./routes/bookRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 
 dotenv.config({ path: path.resolve("../.env") });
 
@@ -20,6 +21,7 @@ app.use(express.json());
 
 app.use("/api/books", bookRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 app.get("/", (req, res) => {
   res.send("Hello world!");
 });
