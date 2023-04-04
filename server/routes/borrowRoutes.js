@@ -5,4 +5,6 @@ const router = express.Router();
 
 router.post("/take", borrowController.borrowBook);
 
+router.post("/return", borrowController.returnBook);
+
 export default router;

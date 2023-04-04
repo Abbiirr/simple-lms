@@ -57,12 +57,16 @@ const borrowBook = async (req, res, next) => {
 const returnBook = async (req, res, next) => {
   try {
     const { book_id } = req.body;
-    const user_id = req.user.id;
+    const token = req.headers.authorization.split(" ")[1];
+    const decode = jwt.verify(token, "SECRET");
+
+    const user_id = decode.id;
+
     // Check if user has borrowed the book
     const [borrowRows] = await db
       .promise()
       .query(
-        `SELECT * FROM borrow WHERE book_id = ? AND user_id = ? AND returned_date IS NULL`,
+        `SELECT * FROM borrow WHERE bookID = ? AND userId = ? AND returned_date IS NULL`,
         [book_id, user_id]
       );
     if (borrowRows.length === 0) {
@@ -76,10 +80,10 @@ const returnBook = async (req, res, next) => {
     const borrowId = borrowRows[0].id;
     await db
       .promise()
-      .query(`UPDATE borrow SET returned_date = ? WHERE id = ?`, [
-        new Date(),
-        borrowId,
-      ]);
+      .query(
+        `UPDATE borrow SET returned_date = ? WHERE bookID = ? AND userId = ?`,
+        [new Date(), book_id, user_id]
+      );
 
     // Update book status to available
     await db
