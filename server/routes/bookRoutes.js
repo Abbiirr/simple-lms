@@ -9,6 +9,4 @@ router.post("/insert", bookController.addBook);
 
 router.get("/search", bookController.searchBooks);
 
-router.post("/borrow", bookController.borrowBook);
-
 export default router;

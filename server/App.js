@@ -9,6 +9,7 @@ import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 import bookRoutes from "./routes/bookRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import borrowRoutes from "./routes/borrowRoutes.js";
 
 dotenv.config({ path: path.resolve("../.env") });
 
@@ -20,6 +21,7 @@ app.use(express.json());
 app.use("/api/books", bookRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/borrow", borrowRoutes);
 app.get("/", (req, res) => {
   res.send("Hello world!");
 });
