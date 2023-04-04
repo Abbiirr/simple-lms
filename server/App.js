@@ -10,6 +10,7 @@ import bookRoutes from "./routes/bookRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import borrowRoutes from "./routes/borrowRoutes.js";
+import reportRoutes from "./routes/reportRoutes.js";
 
 dotenv.config({ path: path.resolve("../.env") });
 
@@ -22,6 +23,7 @@ app.use("/api/books", bookRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/borrow", borrowRoutes);
+app.use("/api/reports", reportRoutes);
 app.get("/", (req, res) => {
   res.send("Hello world!");
 });
