@@ -23,6 +23,11 @@ const Header = () => {
                   <i className="fas fa-shopping-cart"></i>Dashboard
                 </Nav.Link>
               </LinkContainer>
+              <LinkContainer to="/users">
+                <Nav.Link>
+                  <i className="fas fa-shopping-cart"></i>Users
+                </Nav.Link>
+              </LinkContainer>
               <LinkContainer to="/login">
                 <Nav.Link>
                   <i className="fas fa-user"></i>Sign In
