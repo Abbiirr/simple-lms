@@ -31,8 +31,9 @@ const DashboardScreen = () => {
 
     const fetchOverdueCount = async () => {
       try {
-        const response = await axios.get("/api/borrowed/overdue/count");
-        setOverdueCount(response.data.count);
+        const response = await axios.get("/api/reports/overdue");
+        console.log("Overdue: " + response.data.books.length);
+        setOverdueCount(response.data.books.length);
       } catch (error) {
         console.error(error);
       }
