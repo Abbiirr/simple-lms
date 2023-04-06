@@ -11,8 +11,9 @@ const DashboardScreen = () => {
   useEffect(() => {
     const fetchBookCount = async () => {
       try {
-        const response = await axios.get("/api/books/count");
-        setBookCount(response.data.count);
+        const response = await axios.get("/api/books");
+        console.log(response.data.books.length);
+        setBookCount(response.data.books.length);
       } catch (error) {
         console.error(error);
       }
@@ -20,8 +21,9 @@ const DashboardScreen = () => {
 
     const fetchBorrowedCount = async () => {
       try {
-        const response = await axios.get("/api/borrowed/count");
-        setBorrowedCount(response.data.count);
+        const response = await axios.get("/api/reports/borrowed");
+        console.log(response.data.books.length);
+        setBorrowedCount(response.data.books.length);
       } catch (error) {
         console.error(error);
       }
