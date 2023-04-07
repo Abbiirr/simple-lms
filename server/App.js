@@ -11,6 +11,7 @@ import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import borrowRoutes from "./routes/borrowRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
+import userReportsRoutes from "./routes/userReportsRoutes.js";
 
 dotenv.config({ path: path.resolve("../.env") });
 
@@ -24,6 +25,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/borrow", borrowRoutes);
 app.use("/api/reports", reportRoutes);
+app.use("/api/user-reports", userReportsRoutes);
 app.get("/", (req, res) => {
   res.send("Hello world!");
 });

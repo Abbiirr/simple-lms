@@ -6,4 +6,5 @@ router.get("/", userController.getUsers);
 router.delete("/:id", userController.deleteUser);
 router.put("/:id", userController.editUser);
 router.post("/add", userController.addUser);
+// router.get("/history/:id", userController.getUserHistory);
 export default router;
