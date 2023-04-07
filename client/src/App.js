@@ -8,7 +8,7 @@ import HomeScreen from "./screens/HomeScreen";
 import ProductScreen from "./screens/ProductScreen";
 import CartScreen from "./screens/CartScreen";
 import CheckoutScreen from "./screens/CheckoutScreen";
-import OrderScreen from "./screens/OrderScreen";
+import BookScreen from "./screens/BookScreen";
 import DashboardScreen from "./screens/dahsboardScreen";
 import UsersScreen from "./screens/UsersScreen";
 
@@ -24,7 +24,7 @@ const App = () => {
             <Route path="/users" element={<UsersScreen />} />
             <Route path="cart/:id?" element={<CartScreen />} />
             <Route path="/checkout" element={<CheckoutScreen />} />
-            <Route path="/orders" element={<OrderScreen />} />
+            <Route path="/orders" element={<BookScreen />} />
           </Routes>
         </Container>
       </main>

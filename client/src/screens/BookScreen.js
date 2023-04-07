@@ -5,7 +5,7 @@ import { Card, ListGroup, ListGroupItem, Button } from "react-bootstrap";
 // import "./templatesscreen.css";
 import jwt_decode from "jwt-decode";
 
-const OrderScreen = () => {
+const BookScreen = () => {
   const [books, setBooks] = useState([]);
   const token = localStorage.getItem("token");
 
@@ -90,4 +90,4 @@ const OrderScreen = () => {
   );
 };
 
-export default OrderScreen;
+export default BookScreen;
